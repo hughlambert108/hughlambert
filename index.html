@@ -318,7 +318,7 @@
 
   <header>
     <h1>VocabMaster</h1>
-    <div class="subtitle">海洋生物與常用生活英文單字（點擊卡片可翻面）</div>
+    <div class="subtitle">海洋生物與簡單日常生活用語（點擊卡片可翻面）</div>
   </header>
 
   <div class="stats-bar">
@@ -369,7 +369,7 @@
   <div class="hint">資料會自動儲存於瀏覽器（重新整理不流失）</div>
 
   <script>
-    // 預設字庫：10 個海洋生物 + 40 個常用生活英文單字
+    // 預設字庫：10 個海洋生物 + 40 個簡單日常生活用語單字
     const defaultWords = [
       // 1-10: 海洋生物單字
       { word: "Dolphin", definition: "海豚", example: "Dolphins are highly intelligent marine mammals." },
@@ -383,53 +383,53 @@
       { word: "Seahorse", definition: "海馬", example: "Male seahorses carry the eggs until they hatch." },
       { word: "Squid", definition: "烏賊 / 魷魚", example: "Giant squids live deep down in the ocean." },
 
-      // 11-50: 常用生活英文單字
-      { word: "Schedule", definition: "行程、時間表", example: "Let me check my schedule for tomorrow." },
-      { word: "Commute", definition: "通勤", example: "He has a long daily commute to work." },
-      { word: "Budget", definition: "預算", example: "We need to stay within our monthly budget." },
-      { word: "Grocery", definition: "食品雜貨", example: "I need to buy some groceries after work." },
-      { word: "Recipe", definition: "食譜", example: "She cooked dinner following a traditional recipe." },
-      { word: "Appliance", definition: "家用電器", example: "Modern home appliances save us a lot of time." },
-      { word: "Maintenance", definition: "維護、保養", example: "Regular maintenance keeps your vehicle running smoothly." },
-      { word: "Subscription", definition: "訂閱", example: "I canceled my gym subscription last week." },
-      { word: "Receipt", definition: "收據", example: "Please keep the receipt in case you want to return the item." },
-      { word: "Refund", definition: "退款", example: "You can request a full refund within 30 days." },
-      { word: "Appointment", definition: "預約、約定", example: "I made an appointment with the dentist for Friday." },
-      { word: "Pharmacy", definition: "藥局", example: "He bought some medicine at the local pharmacy." },
-      { word: "Exhausted", definition: "精疲力竭的", example: "I felt completely exhausted after working all day." },
-      { word: "Comfortable", definition: "舒適的", example: "These shoes are very comfortable for walking." },
-      { word: "Convenient", definition: "方便的", example: "Living near a subway station is very convenient." },
-      { word: "Recommend", definition: "推薦", example: "Can you recommend a good restaurant near here?" },
-      { word: "Punctual", definition: "準時的", example: "He is always punctual for his meetings." },
-      { word: "Hospitable", definition: "好客的、熱情的", example: "The locals were friendly and hospitable to tourists." },
-      { word: "Neighbourhood", definition: "社區、鄰里", example: "It is a quiet and safe neighbourhood." },
-      { word: "Destination", definition: "目的地", example: "We reached our destination after a three-hour drive." },
-      { word: "Departure", definition: "出發、離開", example: "Please check your flight's departure time." },
-      { word: "Arrival", definition: "到達", example: "The train's arrival was delayed by ten minutes." },
-      { word: "Reservation", definition: "預訂、預約", example: "I would like to make a reservation for two." },
-      { word: "Luggage", definition: "行李", example: "Don't leave your luggage unattended at the airport." },
-      { word: "Itinerary", definition: "行程計劃", example: "Our travel itinerary includes visits to three cities." },
-      { word: "Inconvenient", definition: "不方便的", example: "It is inconvenient to travel without a smartphone." },
-      { word: "Urgent", definition: "緊急的", example: "I have an urgent message to deliver to the manager." },
-      { word: "Essential", definition: "必要的、不可或缺的", example: "Water is essential for human life." },
-      { word: "Habit", definition: "習慣", example: "Drinking warm water in the morning is a healthy habit." },
-      { word: "Routine", definition: "日常慣例", example: "Morning exercise is part of my daily routine." },
-      { word: "Chores", definition: "家務事", example: "We usually do household chores over the weekend." },
-      { word: "Balcony", definition: "陽台", example: "She likes to enjoy her morning coffee on the balcony." },
-      { word: "Garbage", definition: "垃圾", example: "Don't forget to take out the garbage tonight." },
-      { word: "Transaction", definition: "交易", example: "You will receive an email confirmation for this transaction." },
-      { word: "Discount", definition: "折扣", example: "They offer a ten percent discount for students." },
-      { word: "Delivery", definition: "外送、快遞", example: "The food delivery arrived right on time." },
-      { word: "Ingenuity", definition: "心裁、獨創性", example: "The problem was solved thanks to her ingenuity." },
-      { word: "Conversation", definition: "對話", example: "We had an interesting conversation about travel." },
-      { word: "Environment", definition: "環境", example: "We should do our best to protect the environment." },
-      { word: "Atmosphere", definition: "氣氛、大氣", example: "The restaurant has a warm and friendly atmosphere." }
+      // 11-50: 簡單日常生活用語單字
+      { word: "Drink", definition: "喝、飲料", example: "I drink a glass of water every morning." },
+      { word: "Sleep", definition: "睡覺", example: "I usually sleep for eight hours every night." },
+      { word: "Cook", definition: "煮飯、烹飪", example: "My mother likes to cook delicious food." },
+      { word: "Clean", definition: "打掃、乾淨的", example: "Please clean your bedroom before going out." },
+      { word: "Happy", definition: "快樂的", example: "They live a happy life in the country." },
+      { word: "Family", definition: "家庭", example: "Family is the most important thing to me." },
+      { word: "Friend", definition: "朋友", example: "She went to the movies with her best friend." },
+      { word: "School", definition: "學校", example: "The children walk to school every morning." },
+      { word: "Market", definition: "市場", example: "We buy fresh vegetables at the local market." },
+      { word: "Clothes", definition: "衣服", example: "He bought some new clothes for the trip." },
+      { word: "Shoes", definition: "鞋子", example: "Put on your shoes before going outside." },
+      { word: "Phone", definition: "電話", example: "My phone is ringing on the desk." },
+      { word: "Money", definition: "錢", example: "How much money do you need for lunch?" },
+      { word: "Time", definition: "時間", example: "What time is it right now?" },
+      { word: "Weather", definition: "天氣", example: "The weather is very nice and warm today." },
+      { word: "Morning", definition: "早上", example: "Good morning! Have a nice day." },
+      { word: "Evening", definition: "傍晚、晚上", example: "We usually watch TV in the evening." },
+      { word: "Breakfast", definition: "早餐", example: "I ate eggs and bread for breakfast." },
+      { word: "Lunch", definition: "午餐", example: "Let's eat lunch together at noon." },
+      { word: "Dinner", definition: "晚餐", example: "They are having dinner at a restaurant." },
+      { word: "House", definition: "房子", example: "They live in a beautiful red house." },
+      { word: "Street", definition: "街道", example: "There are many trees along the street." },
+      { word: "Store", definition: "商店", example: "I need to go to the grocery store." },
+      { word: "Bus", definition: "公車", example: "He takes the bus to go to work." },
+      { word: "Train", definition: "火車", example: "The train will arrive in five minutes." },
+      { word: "Music", definition: "音樂", example: "She likes listening to soft music." },
+      { word: "Movie", definition: "電影", example: "We watched an exciting movie last night." },
+      { word: "Game", definition: "遊戲", example: "They are playing a video game together." },
+      { word: "Picture", definition: "照片、圖片", example: "He took a picture of the sunset." },
+      { word: "Letter", definition: "信件、字母", example: "She wrote a letter to her grandmother." },
+      { word: "Question", definition: "問題", example: "If you have any question, please ask me." },
+      { word: "Answer", definition: "答案、回答", example: "He knew the correct answer to the test." },
+      { word: "Paper", definition: "紙張", example: "Write your name on a piece of paper." },
+      { word: "Pencil", definition: "鉛筆", example: "I need a pencil to draw a picture." },
+      { word: "Window", definition: "窗戶", example: "Please open the window for fresh air." },
+      { word: "Door", definition: "門", example: "Don't forget to lock the door." },
+      { word: "Chair", definition: "椅子", example: "Please sit down on this chair." },
+      { word: "Table", definition: "桌子", example: "Dinner is served on the dining table." },
+      { word: "Smile", definition: "微笑", example: "She has a beautiful smile on her face." },
+      { word: "Dream", definition: "夢想、做夢", example: "Work hard to achieve your big dream." }
     ];
 
     // 從 localStorage 讀取資料或使用預設值
-    let wordList = JSON.parse(localStorage.getItem('vocab_mixed_v2_list')) || defaultWords;
-    let currentIndex = parseInt(localStorage.getItem('vocab_mixed_v2_index')) || 0;
-    let score = parseInt(localStorage.getItem('vocab_mixed_v2_score')) || 0;
+    let wordList = JSON.parse(localStorage.getItem('vocab_easy_list')) || defaultWords;
+    let currentIndex = parseInt(localStorage.getItem('vocab_easy_index')) || 0;
+    let score = parseInt(localStorage.getItem('vocab_easy_score')) || 0;
 
     const card = document.getElementById('card');
     const cardContainer = document.getElementById('card-container');
@@ -444,9 +444,9 @@
 
     // 儲存狀態至 localStorage
     function saveData() {
-      localStorage.setItem('vocab_mixed_v2_list', JSON.stringify(wordList));
-      localStorage.setItem('vocab_mixed_v2_index', currentIndex);
-      localStorage.setItem('vocab_mixed_v2_score', score);
+      localStorage.setItem('vocab_easy_list', JSON.stringify(wordList));
+      localStorage.setItem('vocab_easy_index', currentIndex);
+      localStorage.setItem('vocab_easy_score', score);
     }
 
     // 更新介面內容
