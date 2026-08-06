@@ -1,0 +1,575 @@
+<!DOCTYPE html>
+<html lang="zh-Hant">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>VocabMaster - 50個精選單字卡（含跳頁與刪除功能）</title>
+  <style>
+    :root {
+      --primary: #0284c7;
+      --primary-hover: #0369a1;
+      --success: #10b981;
+      --success-hover: #059669;
+      --danger: #ef4444;
+      --danger-hover: #dc2626;
+      --bg: #f0f9ff;
+      --card-bg: #ffffff;
+      --text-main: #0f172a;
+      --text-sub: #475569;
+    }
+
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+
+    body {
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+      background-color: var(--bg);
+      color: var(--text-main);
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      min-height: 100vh;
+      padding: 30px 15px;
+    }
+
+    header {
+      text-align: center;
+      margin-bottom: 20px;
+    }
+
+    h1 {
+      font-size: 2rem;
+      color: var(--primary);
+      margin-bottom: 6px;
+    }
+
+    .subtitle {
+      font-size: 0.95rem;
+      color: var(--text-sub);
+    }
+
+    .stats-bar {
+      display: flex;
+      gap: 20px;
+      background: white;
+      padding: 10px 20px;
+      border-radius: 30px;
+      box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
+      margin-bottom: 25px;
+      font-size: 0.95rem;
+      font-weight: 600;
+    }
+
+    .stats-item span {
+      color: var(--primary);
+    }
+
+    /* 翻轉卡片樣式 */
+    .card-container {
+      width: 100%;
+      max-width: 380px;
+      height: 240px;
+      perspective: 1000px;
+      cursor: pointer;
+    }
+
+    .card {
+      width: 100%;
+      height: 100%;
+      position: relative;
+      transform-style: preserve-3d;
+      transition: transform 0.6s cubic-bezier(0.4, 0, 0.2, 1);
+      border-radius: 20px;
+      box-shadow: 0 10px 25px -5px rgba(2, 132, 199, 0.15);
+    }
+
+    .card.flipped {
+      transform: rotateY(180deg);
+    }
+
+    .card-face {
+      position: absolute;
+      width: 100%;
+      height: 100%;
+      backface-visibility: hidden;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      align-items: center;
+      background: var(--card-bg);
+      border-radius: 20px;
+      padding: 25px;
+      border: 1px solid #e0f2fe;
+    }
+
+    .card-back {
+      transform: rotateY(180deg);
+      background-color: #f8fafc;
+    }
+
+    .word {
+      font-size: 2.2rem;
+      font-weight: 700;
+      color: var(--text-main);
+      margin-bottom: 12px;
+      text-align: center;
+    }
+
+    .card-actions {
+      display: flex;
+      gap: 12px;
+      align-items: center;
+    }
+
+    .action-btn {
+      border: none;
+      width: 44px;
+      height: 44px;
+      border-radius: 50%;
+      font-size: 1.2rem;
+      cursor: pointer;
+      transition: transform 0.1s, background 0.2s;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+
+    .audio-btn {
+      background: #e0f2fe;
+    }
+
+    .audio-btn:hover {
+      background: #bae6fd;
+      transform: scale(1.05);
+    }
+
+    .delete-card-btn {
+      background: #fee2e2;
+    }
+
+    .delete-card-btn:hover {
+      background: #fca5a5;
+      transform: scale(1.05);
+    }
+
+    .definition {
+      font-size: 1.6rem;
+      font-weight: 600;
+      color: var(--primary);
+      margin-bottom: 12px;
+    }
+
+    .example {
+      font-size: 0.95rem;
+      color: var(--text-sub);
+      text-align: center;
+      line-height: 1.4;
+      font-style: italic;
+    }
+
+    /* 按鈕控制區 */
+    .controls {
+      margin-top: 25px;
+      display: flex;
+      gap: 15px;
+      width: 100%;
+      max-width: 380px;
+    }
+
+    .btn {
+      flex: 1;
+      padding: 12px 0;
+      font-size: 1rem;
+      font-weight: 600;
+      border: none;
+      border-radius: 12px;
+      cursor: pointer;
+      transition: background 0.2s, transform 0.1s;
+      box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.05);
+    }
+
+    .btn:active {
+      transform: scale(0.98);
+    }
+
+    .btn-wrong {
+      background-color: var(--danger);
+      color: white;
+    }
+
+    .btn-wrong:hover {
+      background-color: var(--danger-hover);
+    }
+
+    .btn-right {
+      background-color: var(--success);
+      color: white;
+    }
+
+    .btn-right:hover {
+      background-color: var(--success-hover);
+    }
+
+    .btn-reset {
+      background-color: #9ca3af;
+      color: white;
+      margin-top: 10px;
+    }
+
+    .btn-reset:hover {
+      background-color: #71717a;
+    }
+
+    /* 跳頁控制區 */
+    .jump-container {
+      margin-top: 20px;
+      display: flex;
+      gap: 10px;
+      width: 100%;
+      max-width: 380px;
+    }
+
+    .jump-input {
+      width: 60%;
+      padding: 10px 14px;
+      border: 1px solid #cbd5e1;
+      border-radius: 12px;
+      font-size: 0.95rem;
+      outline: none;
+    }
+
+    .jump-input:focus {
+      border-color: var(--primary);
+    }
+
+    .btn-jump {
+      background-color: var(--primary);
+      color: white;
+      border: none;
+      border-radius: 12px;
+      font-weight: 600;
+      cursor: pointer;
+      padding: 0 15px;
+    }
+
+    .btn-jump:hover {
+      background-color: var(--primary-hover);
+    }
+
+    /* 表單區域 */
+    .form-container {
+      margin-top: 25px;
+      background: white;
+      padding: 20px;
+      border-radius: 16px;
+      box-shadow: 0 4px 12px rgba(0,0,0,0.03);
+      width: 100%;
+      max-width: 380px;
+      border: 1px solid #e0f2fe;
+    }
+
+    .form-container h3 {
+      font-size: 1.1rem;
+      margin-bottom: 15px;
+      color: var(--text-main);
+    }
+
+    .input-group {
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+    }
+
+    input {
+      padding: 10px 14px;
+      border: 1px solid #cbd5e1;
+      border-radius: 8px;
+      font-size: 0.95rem;
+      outline: none;
+      transition: border-color 0.2s;
+    }
+
+    input:focus {
+      border-color: var(--primary);
+    }
+
+    .btn-add {
+      background-color: var(--primary);
+      color: white;
+      margin-top: 5px;
+    }
+
+    .btn-add:hover {
+      background-color: var(--primary-hover);
+    }
+
+    .hint {
+      margin-top: 15px;
+      font-size: 0.8rem;
+      color: var(--text-sub);
+      text-align: center;
+    }
+  </style>
+</head>
+<body>
+
+  <header>
+    <h1>VocabMaster</h1>
+    <div class="subtitle">海洋生物與常用生活英文單字（點擊卡片可翻面）</div>
+  </header>
+
+  <div class="stats-bar">
+    <div class="stats-item">進度：<span id="current-index">0</span>/<span id="total-words">0</span></div>
+    <div class="stats-item">已掌握：<span id="score">0</span></div>
+  </div>
+
+  <div class="card-container" id="card-container">
+    <div class="card" id="card">
+      <!-- 正面 -->
+      <div class="card-face card-front">
+        <div class="word" id="word-text">Loading...</div>
+        <div class="card-actions">
+          <button class="action-btn audio-btn" id="audio-btn" title="朗讀發音">🔊</button>
+          <button class="action-btn delete-card-btn" id="delete-btn" title="刪除此單字">🗑️</button>
+        </div>
+      </div>
+      <!-- 背面 -->
+      <div class="card-face card-back">
+        <div class="definition" id="definition-text">釋義</div>
+        <div class="example" id="example-text">例句</div>
+      </div>
+    </div>
+  </div>
+
+  <div class="controls">
+    <button class="btn btn-wrong" onclick="handleAnswer(false)">還不熟 ❌</button>
+    <button class="btn btn-right" onclick="handleAnswer(true)">記住了 ⭕</button>
+  </div>
+
+  <!-- 跳轉至指定題數區塊 -->
+  <div class="jump-container">
+    <input type="number" id="jump-index" class="jump-input" placeholder="輸入題號 (如 1)" min="1">
+    <button class="btn-jump" onclick="jumpToWord()">跳至該題 🚀</button>
+  </div>
+
+  <div class="form-container">
+    <h3>新增專屬單字卡</h3>
+    <div class="input-group">
+      <input type="text" id="new-word" placeholder="英文單字 (例如: manatee)">
+      <input type="text" id="new-def" placeholder="中文釋義 (例如: 海牛)">
+      <input type="text" id="new-ex" placeholder="英文例句 (選填)">
+      <button class="btn btn-add" onclick="addCustomWord()">新增至字庫</button>
+      <button class="btn btn-reset" onclick="resetToDefault()">重置為預設 50 單字</button>
+    </div>
+  </div>
+
+  <div class="hint">資料會自動儲存於瀏覽器（重新整理不流失）</div>
+
+  <script>
+    // 預設字庫：10 個海洋生物 + 40 個常用生活英文單字
+    const defaultWords = [
+      // 1-10: 海洋生物單字
+      { word: "Dolphin", definition: "海豚", example: "Dolphins are highly intelligent marine mammals." },
+      { word: "Whale", definition: "鯨魚", example: "The blue whale is the largest animal in the world." },
+      { word: "Shark", definition: "鯊魚", example: "Great white sharks have sharp teeth for hunting." },
+      { word: "Octopus", definition: "章魚", example: "An octopus can change its color to blend in with its surroundings." },
+      { word: "Jellyfish", definition: "水母", example: "Some species of jellyfish glow in the dark." },
+      { word: "Turtle", definition: "海龜", example: "Sea turtles return to the same beach to lay eggs." },
+      { word: "Crab", definition: "螃蟹", example: "The crab moved sideways across the sandy beach." },
+      { word: "Starfish", definition: "海星", example: "Starfish can regenerate their lost arms." },
+      { word: "Seahorse", definition: "海馬", example: "Male seahorses carry the eggs until they hatch." },
+      { word: "Squid", definition: "烏賊 / 魷魚", example: "Giant squids live deep down in the ocean." },
+
+      // 11-50: 常用生活英文單字
+      { word: "Schedule", definition: "行程、時間表", example: "Let me check my schedule for tomorrow." },
+      { word: "Commute", definition: "通勤", example: "He has a long daily commute to work." },
+      { word: "Budget", definition: "預算", example: "We need to stay within our monthly budget." },
+      { word: "Grocery", definition: "食品雜貨", example: "I need to buy some groceries after work." },
+      { word: "Recipe", definition: "食譜", example: "She cooked dinner following a traditional recipe." },
+      { word: "Appliance", definition: "家用電器", example: "Modern home appliances save us a lot of time." },
+      { word: "Maintenance", definition: "維護、保養", example: "Regular maintenance keeps your vehicle running smoothly." },
+      { word: "Subscription", definition: "訂閱", example: "I canceled my gym subscription last week." },
+      { word: "Receipt", definition: "收據", example: "Please keep the receipt in case you want to return the item." },
+      { word: "Refund", definition: "退款", example: "You can request a full refund within 30 days." },
+      { word: "Appointment", definition: "預約、約定", example: "I made an appointment with the dentist for Friday." },
+      { word: "Pharmacy", definition: "藥局", example: "He bought some medicine at the local pharmacy." },
+      { word: "Exhausted", definition: "精疲力竭的", example: "I felt completely exhausted after working all day." },
+      { word: "Comfortable", definition: "舒適的", example: "These shoes are very comfortable for walking." },
+      { word: "Convenient", definition: "方便的", example: "Living near a subway station is very convenient." },
+      { word: "Recommend", definition: "推薦", example: "Can you recommend a good restaurant near here?" },
+      { word: "Punctual", definition: "準時的", example: "He is always punctual for his meetings." },
+      { word: "Hospitable", definition: "好客的、熱情的", example: "The locals were friendly and hospitable to tourists." },
+      { word: "Neighbourhood", definition: "社區、鄰里", example: "It is a quiet and safe neighbourhood." },
+      { word: "Destination", definition: "目的地", example: "We reached our destination after a three-hour drive." },
+      { word: "Departure", definition: "出發、離開", example: "Please check your flight's departure time." },
+      { word: "Arrival", definition: "到達", example: "The train's arrival was delayed by ten minutes." },
+      { word: "Reservation", definition: "預訂、預約", example: "I would like to make a reservation for two." },
+      { word: "Luggage", definition: "行李", example: "Don't leave your luggage unattended at the airport." },
+      { word: "Itinerary", definition: "行程計劃", example: "Our travel itinerary includes visits to three cities." },
+      { word: "Inconvenient", definition: "不方便的", example: "It is inconvenient to travel without a smartphone." },
+      { word: "Urgent", definition: "緊急的", example: "I have an urgent message to deliver to the manager." },
+      { word: "Essential", definition: "必要的、不可或缺的", example: "Water is essential for human life." },
+      { word: "Habit", definition: "習慣", example: "Drinking warm water in the morning is a healthy habit." },
+      { word: "Routine", definition: "日常慣例", example: "Morning exercise is part of my daily routine." },
+      { word: "Chores", definition: "家務事", example: "We usually do household chores over the weekend." },
+      { word: "Balcony", definition: "陽台", example: "She likes to enjoy her morning coffee on the balcony." },
+      { word: "Garbage", definition: "垃圾", example: "Don't forget to take out the garbage tonight." },
+      { word: "Transaction", definition: "交易", example: "You will receive an email confirmation for this transaction." },
+      { word: "Discount", definition: "折扣", example: "They offer a ten percent discount for students." },
+      { word: "Delivery", definition: "外送、快遞", example: "The food delivery arrived right on time." },
+      { word: "Ingenuity", definition: "心裁、獨創性", example: "The problem was solved thanks to her ingenuity." },
+      { word: "Conversation", definition: "對話", example: "We had an interesting conversation about travel." },
+      { word: "Environment", definition: "環境", example: "We should do our best to protect the environment." },
+      { word: "Atmosphere", definition: "氣氛、大氣", example: "The restaurant has a warm and friendly atmosphere." }
+    ];
+
+    // 從 localStorage 讀取資料或使用預設值
+    let wordList = JSON.parse(localStorage.getItem('vocab_mixed_v2_list')) || defaultWords;
+    let currentIndex = parseInt(localStorage.getItem('vocab_mixed_v2_index')) || 0;
+    let score = parseInt(localStorage.getItem('vocab_mixed_v2_score')) || 0;
+
+    const card = document.getElementById('card');
+    const cardContainer = document.getElementById('card-container');
+    const wordText = document.getElementById('word-text');
+    const definitionText = document.getElementById('definition-text');
+    const exampleText = document.getElementById('example-text');
+    const scoreText = document.getElementById('score');
+    const currentIndexText = document.getElementById('current-index');
+    const totalWordsText = document.getElementById('total-words');
+    const audioBtn = document.getElementById('audio-btn');
+    const deleteBtn = document.getElementById('delete-btn');
+
+    // 儲存狀態至 localStorage
+    function saveData() {
+      localStorage.setItem('vocab_mixed_v2_list', JSON.stringify(wordList));
+      localStorage.setItem('vocab_mixed_v2_index', currentIndex);
+      localStorage.setItem('vocab_mixed_v2_score', score);
+    }
+
+    // 更新介面內容
+    function renderCard() {
+      if (wordList.length === 0) {
+        wordText.textContent = '無單字';
+        definitionText.textContent = '字庫目前是空的';
+        exampleText.textContent = '請在下方新增單字或重置字庫';
+        currentIndexText.textContent = 0;
+        totalWordsText.textContent = 0;
+        return;
+      }
+      
+      if (currentIndex >= wordList.length) {
+        currentIndex = 0;
+      }
+
+      card.classList.remove('flipped');
+      const current = wordList[currentIndex];
+      wordText.textContent = current.word;
+      definitionText.textContent = current.definition;
+      exampleText.textContent = current.example ? `"${current.example}"` : '';
+      currentIndexText.textContent = currentIndex + 1;
+      totalWordsText.textContent = wordList.length;
+      scoreText.textContent = score;
+    }
+
+    // 點擊卡片翻面
+    cardContainer.addEventListener('click', (e) => {
+      if (e.target.closest('.action-btn')) return;
+      if (wordList.length === 0) return;
+      card.classList.toggle('flipped');
+    });
+
+    // 文字轉語音 (TTS)
+    audioBtn.addEventListener('click', () => {
+      if (wordList.length === 0) return;
+      const text = wordList[currentIndex].word;
+      const utterance = new SpeechSynthesisUtterance(text);
+      utterance.lang = 'en-US';
+      window.speechSynthesis.speak(utterance);
+    });
+
+    // 刪除當前單字
+    deleteBtn.addEventListener('click', () => {
+      if (wordList.length === 0) return;
+      const deletedWord = wordList[currentIndex].word;
+      if (confirm(`確定要刪除「${deletedWord}」嗎？`)) {
+        wordList.splice(currentIndex, 1);
+        if (currentIndex >= wordList.length && wordList.length > 0) {
+          currentIndex = 0;
+        }
+        saveData();
+        renderCard();
+      }
+    });
+
+    // 答題切換
+    function handleAnswer(remembered) {
+      if (wordList.length === 0) return;
+      if (remembered) {
+        score++;
+      }
+      currentIndex = (currentIndex + 1) % wordList.length;
+      saveData();
+      renderCard();
+    }
+
+    // 跳轉至指定題號
+    function jumpToWord() {
+      const jumpInput = document.getElementById('jump-index');
+      const targetIndex = parseInt(jumpInput.value.trim());
+
+      if (isNaN(targetIndex) || targetIndex < 1 || targetIndex > wordList.length) {
+        alert(`請輸入有效的題號（1 到 ${wordList.length} 之間）`);
+        return;
+      }
+
+      currentIndex = targetIndex - 1; // 轉換為索引（從 0 開始）
+      jumpInput.value = '';
+      saveData();
+      renderCard();
+    }
+
+    // 新增自訂單字
+    function addCustomWord() {
+      const wordInput = document.getElementById('new-word');
+      const defInput = document.getElementById('new-def');
+      const exInput = document.getElementById('new-ex');
+
+      const word = wordInput.value.trim();
+      const definition = defInput.value.trim();
+      const example = exInput.value.trim();
+
+      if (!word || !definition) {
+        alert('請輸入英文單字與中文釋義！');
+        return;
+      }
+
+      wordList.push({ word, definition, example });
+      saveData();
+
+      wordInput.value = '';
+      defInput.value = '';
+      exInput.value = '';
+
+      alert(`已新增：${word}`);
+      renderCard();
+    }
+
+    // 重置為預設 50 單字
+    function resetToDefault() {
+      if (confirm('確定要清除自訂單字並恢復預設的 50 個單字嗎？')) {
+        wordList = [...defaultWords];
+        currentIndex = 0;
+        score = 0;
+        saveData();
+        renderCard();
+      }
+    }
+
+    // 初始化渲染
+    renderCard();
+  </script>
+</body>
+</html>
